@@ -38,12 +38,21 @@ class MakeWorkbench(Workbench):
 
     def Initialize(self):
         """Called once, the first time this workbench is activated."""
-        # Make sure the folder this file lives in is importable.
-        # __file__ is the path of InitGui.py itself; dirname drops
-        # the filename. We put that folder at the FRONT of sys.path
-        # (position 0) so our MakeWorkbench package is found before
-        # anything else with a similar name.
-        mod_dir = os.path.dirname(__file__)
+        # Make the folder this file lives in importable.
+        #
+        # Normally __file__ (the path of InitGui.py itself) tells us
+        # where that is. Some FreeCAD builds load InitGui.py in a
+        # namespace where __file__ does not exist - so we fall back
+        # to FreeCAD's own user directory, where the workbench is
+        # installed as Mod/MakeWorkbench.
+        if "__file__" in globals():
+            mod_dir = os.path.dirname(os.path.abspath(__file__))
+        else:
+            mod_dir = os.path.join(
+                App.getUserAppDataDir(), "Mod", "MakeWorkbench")
+
+        # Put that folder at the FRONT of sys.path (position 0) so
+        # our MakeWorkbench package is found before anything similar.
         if mod_dir not in sys.path:
             sys.path.insert(0, mod_dir)
 
