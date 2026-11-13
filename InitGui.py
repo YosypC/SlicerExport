@@ -10,6 +10,9 @@
 # can be tested without a window lives in the MakeWorkbench package,
 # and only the registration of the workbench happens here.
 
+import os
+import sys
+
 import FreeCAD as App      # FreeCAD core: documents, objects, console
 import FreeCADGui          # FreeCAD GUI: windows, toolbars, commands
 
@@ -20,8 +23,6 @@ try:
     from FreeCADGui import Workbench
 except ImportError:
     from builtins import Workbench
-
-from MakeWorkbench.hello_command import HelloCommand
 
 
 class MakeWorkbench(Workbench):
@@ -37,6 +38,22 @@ class MakeWorkbench(Workbench):
 
     def Initialize(self):
         """Called once, the first time this workbench is activated."""
+        # Make sure the folder this file lives in is importable.
+        # __file__ is the path of InitGui.py itself; dirname drops
+        # the filename. We put that folder at the FRONT of sys.path
+        # (position 0) so our MakeWorkbench package is found before
+        # anything else with a similar name.
+        mod_dir = os.path.dirname(__file__)
+        if mod_dir not in sys.path:
+            sys.path.insert(0, mod_dir)
+
+        # Import the command here - inside Initialize - not at the top
+        # of the file. Some FreeCAD builds load InitGui.py in a way
+        # where top-level imports of sibling modules do not reach the
+        # code that runs later. All mature workbenches import their
+        # commands exactly like this.
+        from MakeWorkbench.hello_command import HelloCommand
+
         # "Make_Hello" is the permanent command name. FreeCAD uses it
         # in toolbars, menus and saved settings, so never change it
         # once released.
