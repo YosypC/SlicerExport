@@ -102,12 +102,24 @@ One honest rule: every bug fixed gets a test that would have caught it.
 
 ## Roadmap
 
-- **M0 — skeleton**: workbench appears in FreeCAD's workbench dropdown with
-  one toolbar button that logs "hello". Proves the plumbing. Hardest step;
-  do it first.
+- **M0 — skeleton (DONE, verified in FreeCAD 26.3 dev)**: workbench appears in
+  FreeCAD's workbench dropdown with one toolbar button that logs "hello".
+  Proves the plumbing. Hardest step; done first.
 - **M1 — export**: button exports the selected body to STL via a save dialog,
   at a hardcoded quality. Then benchmark Coarse/Standard/Fine deviation values
   and lock in R2's numbers.
+
+### Lessons from M0 (keep: they explain the code's shape)
+
+- This dev build (26.3) loads InitGui.py through a namespace that provides no
+  `__file__`. InitGui therefore falls back to
+  `App.getUserAppDataDir() + "Mod" + "MakeWorkbench"` to find its own folder,
+  which means the workbench MUST be installed under that exact folder name.
+- Commands are imported inside `Initialize()`, never at the top of InitGui.
+  This is also the convention used by mature FreeCAD workbenches.
+- The MCP `execute_code` channel runs Python through its own path and cannot
+  reproduce workbench loading. Use it for geometry work (M1+), not for
+  testing InitGui.
 - **M2 — settings**: quality presets (plus slicer path for R3) configurable in
   FreeCAD preferences.
 - **M3 — launch slicer**: pass the exported file to the configured executable.
