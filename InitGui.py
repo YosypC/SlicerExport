@@ -62,16 +62,18 @@ class MakeWorkbench(Workbench):
         # code that runs later. All mature workbenches import their
         # commands exactly like this.
         from MakeWorkbench.hello_command import HelloCommand
+        from MakeWorkbench.export_command import ExportCommand
 
-        # "Make_Hello" is the permanent command name. FreeCAD uses it
-        # in toolbars, menus and saved settings, so never change it
-        # once released.
+        # "Make_ExportSTL" and "Make_Hello" are the permanent command
+        # names. FreeCAD uses them in toolbars, menus and saved
+        # settings, so never change them once released.
+        FreeCADGui.addCommand("Make_ExportSTL", ExportCommand())
         FreeCADGui.addCommand("Make_Hello", HelloCommand())
 
-        # A toolbar with one button, and the same button under a
+        # A toolbar with both buttons, and the same under a
         # "Make" top menu.
-        self.appendToolbar("Make tools", ["Make_Hello"])
-        self.appendMenu("Make", ["Make_Hello"])
+        self.appendToolbar("Make tools", ["Make_ExportSTL", "Make_Hello"])
+        self.appendMenu("Make", ["Make_ExportSTL", "Make_Hello"])
 
         App.Console.PrintMessage(
             "Make workbench initialized. It has no features yet - "
