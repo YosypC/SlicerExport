@@ -31,8 +31,21 @@ Everything else (presets, multi-body, orientations) is sugar.
 
 - R1: Export the active or selected Body/Part to STL (later: 3MF, STEP).
 - R2: Mesh quality setting — Coarse / Standard / Fine presets controlling the
-  tessellation deviation used on export, persisted per user. Exact numeric
-  values are tuned during M1 once we can compare real output.
+  tessellation deviation used on export, persisted per user. Values locked by
+  the M1 benchmark on FreeCAD 26.3 (test part: 12.5 mm radius sphere; all
+  presets export in under 0.15 s):
+
+  | Preset   | LinearDeflection | AngularDeflection | Facets | STL size |
+  |----------|------------------|-------------------|--------|----------|
+  | Coarse   | 0.20 mm          | 0.50              | 636    | 32 KB    |
+  | Standard | 0.05 mm          | 0.35              | 2,554  | 128 KB   |
+  | Fine     | 0.01 mm          | 0.10              | 12,692 | 635 KB   |
+
+  Standard's 0.05 mm deviation is a quarter of a typical 0.2 mm layer height,
+  so mesh error is invisible in an FDM print. Fine targets resin-class prints.
+  Implementation note: presets use MeshPart.meshFromShape (linear + angular
+  knobs). Mesh.export's single tolerance argument is NOT used - it silently
+  plateaus because the default angular deflection dominates on curved faces.
 - R3: Optional "open in slicer" action: launch a user-configured slicer
   executable with the exported file as argument.
 - R4: Live in FreeCAD's UI as a proper workbench (toolbar icon + a small task
@@ -105,9 +118,9 @@ One honest rule: every bug fixed gets a test that would have caught it.
 - **M0 — skeleton (DONE, verified in FreeCAD 26.3 dev)**: workbench appears in
   FreeCAD's workbench dropdown with one toolbar button that logs "hello".
   Proves the plumbing. Hardest step; done first.
-- **M1 — export**: button exports the selected body to STL via a save dialog,
-  at a hardcoded quality. Then benchmark Coarse/Standard/Fine deviation values
-  and lock in R2's numbers.
+- **M1 — export (DONE, verified STL in OrcaSlicer)**: button exports the
+  selected body to STL via a save dialog, at a hardcoded quality. Benchmark of
+  Coarse/Standard/Fine deviations done; numbers locked into R2 above.
 
 ### Lessons from M0 (keep: they explain the code's shape)
 
