@@ -9,6 +9,7 @@ import FreeCAD as App
 import FreeCADGui
 
 from MakeWorkbench import exporter
+from MakeWorkbench import icon
 from MakeWorkbench import launcher
 from MakeWorkbench import settings
 from MakeWorkbench.export_command import get_printable_selection
@@ -22,6 +23,7 @@ class PrintCommand:
             "MenuText": "Send to slicer",
             "ToolTip": "Export the selected body or part and open it"
                        " directly in your slicer.",
+            "Pixmap": icon("send_to_slicer.svg"),
         }
 
     def IsActive(self):

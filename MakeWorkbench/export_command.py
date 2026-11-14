@@ -10,6 +10,7 @@ from PySide6 import QtWidgets
 
 from MakeWorkbench import exporter
 from MakeWorkbench import settings
+from MakeWorkbench import icon
 
 
 def get_printable_selection():
@@ -66,6 +67,7 @@ class ExportCommand:
             "MenuText": "Export STL",
             "ToolTip": "Export the selected body or part to an STL"
                        " file for 3D printing.",
+            "Pixmap": icon("export_stl.svg"),
         }
 
     def IsActive(self):

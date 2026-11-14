@@ -6,6 +6,7 @@ import FreeCADGui
 from PySide6 import QtWidgets
 
 from MakeWorkbench import settings
+from MakeWorkbench import icon
 
 
 class SettingsCommand:
@@ -15,6 +16,7 @@ class SettingsCommand:
         return {
             "MenuText": "Settings",
             "ToolTip": "Export quality and other Make settings.",
+            "Pixmap": icon("settings.svg"),
         }
 
     def IsActive(self):
