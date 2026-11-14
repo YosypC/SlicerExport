@@ -56,3 +56,22 @@ def test_shape_without_solids_is_not_printable():
 def test_shape_with_solids_is_printable():
     body = FakeBody("x", shape=FakeShape(solids=[object()]))
     assert exporter.has_printable_shape(body) is True
+
+
+# --- format_from_filter -------------------------------------------
+
+def test_step_filter_selects_step():
+    assert exporter.format_from_filter("STEP (*.step *.stp)",
+                                       "part.step") == "STEP"
+
+def test_stl_filter_selects_stl():
+    assert exporter.format_from_filter("STL Mesh (*.stl)",
+                                       "part.stl") == "STL"
+
+def test_empty_filter_falls_back_to_extension():
+    assert exporter.format_from_filter("", "part.stp") == "STEP"
+    assert exporter.format_from_filter("", "part.STEP") == "STEP"
+    assert exporter.format_from_filter("", "part.stl") == "STL"
+
+def test_no_filter_no_extension_defaults_to_stl():
+    assert exporter.format_from_filter("", "part") == "STL"

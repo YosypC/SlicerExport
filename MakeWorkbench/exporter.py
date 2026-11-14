@@ -1,8 +1,12 @@
-# Pure export logic: object -> STL on disk. No GUI code here (PLAN.md, N3).
+# Pure export logic: object -> STL/STEP on disk. No GUI code here
+# (PLAN.md, N3).
 
-# NOTE: MeshPart is imported inside export_to_stl, not at module top:
-# it only exists inside FreeCAD, and a top-level import would break
-# the plain-Python tests in tests/ (PLAN.md, testing layer 1).
+# NOTE: MeshPart and Part are imported inside the functions that need
+# them, not at module top: they only exist inside FreeCAD, and
+# top-level imports would break the plain-Python tests in tests/
+# (PLAN.md, testing layer 1).
+
+import os
 
 
 def has_printable_shape(obj):
@@ -35,3 +39,29 @@ def export_to_stl(obj, path, linear_dev, angular_dev):
                                   Relative=False)
     mesh.write(path)
     return path
+
+
+def export_to_step(obj, path):
+    """Write obj's exact geometry to path as STEP. Raises on failure.
+
+    STEP carries the true curved surfaces (B-rep), not a triangle
+    mesh - so the quality presets do not apply (PLAN.md, R2).
+    """
+    import Part
+    obj.Shape.exportStep(path)
+    return path
+
+
+def format_from_filter(selected_filter, path):
+    """'STEP' or 'STL', based on the save dialog's chosen filter.
+
+    The filter text is authoritative ("STEP (*.step *.stp)" etc.);
+    the file extension is only consulted when the filter is empty.
+    """
+    chosen = (selected_filter or "").lower()
+    if "step" in chosen or ".stp" in chosen:
+        return "STEP"
+    if "stl" in chosen:
+        return "STL"
+    extension = os.path.splitext(path)[1].lower()
+    return "STEP" if extension in (".step", ".stp") else "STL"

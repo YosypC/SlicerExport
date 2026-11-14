@@ -29,7 +29,10 @@ Everything else (presets, multi-body, orientations) is sugar.
 
 ### Functional
 
-- R1: Export the active or selected Body/Part to STL (later: 3MF, STEP).
+- R1: Export the active or selected Body/Part to STL or STEP, chosen
+  via the save dialog's type filter. STL applies the quality preset;
+  STEP carries exact geometry (presets do not apply). 3MF remains
+  out of scope.
 - R2: Mesh quality setting — Coarse / Standard / Fine presets controlling the
   tessellation deviation used on export, persisted per user. Values locked by
   the M1 benchmark on FreeCAD 26.3 (test part: 12.5 mm radius sphere; all
@@ -131,8 +134,12 @@ One honest rule: every bug fixed gets a test that would have caught it.
   (MakeWorkbenchExport.stl) and launches the configured slicer with it,
   one click like Fusion's Make tab. Slicer path lives in settings.
   Export STL stays dialog-based for when a kept file is wanted.
-- **M4 — polish**: task panel with quality selector + filename preview,
-  single-click "Export & Print", error messages a human can read.
+- **M4 — polish (DONE)**: toolbar icons (user will replace the
+  placeholders), TESTING.md smoke checklist, consistent error text.
+  The planned task panel was dropped: one button + settings suffice.
+- **M5 — STEP export (DONE)**: Export offers STL and STEP in the save
+  dialog filter. STEP is exact geometry; the quality preset applies to
+  STL only, and the settings dialog says so.
 
 ### Lessons from M0 (keep: they explain the code's shape)
 

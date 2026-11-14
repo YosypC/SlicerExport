@@ -37,18 +37,22 @@ def export_via_dialog(window_title="Export STL"):
 
     # Qt directly, because this build has no
     # FreeCADGui.getSaveFileName (PLAN.md, M0 lessons).
-    # The dialog starts in the last folder exported to.
+    # The dialog starts in the last folder exported to; the format
+    # filter the user picks decides which exporter runs.
     suggested = os.path.join(settings.last_dir(),
                              exporter.default_filename(obj))
-    path, _ = QtWidgets.QFileDialog.getSaveFileName(
+    path, chosen_filter = QtWidgets.QFileDialog.getSaveFileName(
         FreeCADGui.getMainWindow(), window_title, suggested,
-        "STL Mesh (*.stl)")
+        "STL Mesh (*.stl);;STEP (*.step *.stp)")
     if not path:
         return None
 
     try:
-        linear_dev, angular_dev = settings.deviation()
-        exporter.export_to_stl(obj, path, linear_dev, angular_dev)
+        if exporter.format_from_filter(chosen_filter, path) == "STEP":
+            exporter.export_to_step(obj, path)
+        else:
+            linear_dev, angular_dev = settings.deviation()
+            exporter.export_to_stl(obj, path, linear_dev, angular_dev)
     except Exception as exc:
         App.Console.PrintError("Make: export failed: %s\n" % exc)
         return None
@@ -64,9 +68,9 @@ class ExportCommand:
 
     def GetResources(self):
         return {
-            "MenuText": "Export STL",
+            "MenuText": "Export",
             "ToolTip": "Export the selected body or part to an STL"
-                       " file for 3D printing.",
+                       " or STEP file.",
             "Pixmap": icon("export_stl.svg"),
         }
 

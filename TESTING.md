@@ -13,15 +13,18 @@ covers what automation cannot: the GUI itself.
 ## Buttons
 
 - [] Workbench "Make" appears in the dropdown
-- [] Toolbar shows: Export STL, Send to slicer, Settings (with icons)
+- [] Toolbar shows: Export, Send to slicer, Settings (with icons)
 - [] With nothing selected: all three action buttons greyed out
 - [] Selecting the Body enables them; selecting only a sketch
       (no solids) keeps them greyed
 
-## Export STL
+## Export
 
-- [] Save dialog opens in the folder of the last export, filename
-      pre-filled with the body's name
+- [] Save dialog offers two file types in the filter dropdown:
+      STL Mesh (*.stl) and STEP (*.step *.stp)
+- [] STL export applies the quality preset; the chosen folder and
+      filename are remembered on the next export
+- [] STEP export ignores the quality preset (exact geometry)
 - [] After saving, console prints `Make: exported '<label>' -> <path>`
 - [] Reopening the file in OrcaSlicer shows the correct geometry
 
@@ -37,5 +40,5 @@ covers what automation cannot: the GUI itself.
 
 - [] Quality preset survives a FreeCAD restart
 - [] Higher presets produce visibly smoother curved surfaces in
-      OrcaSlicer (compare Coarse vs Fine on a sphere)
+      OrcaSlicer (STL exports only; STEP is always exact)
 - [] Slicer path browse button only accepts executables

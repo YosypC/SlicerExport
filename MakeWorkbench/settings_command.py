@@ -33,7 +33,7 @@ class SettingsCommand:
         combo = QtWidgets.QComboBox(dialog)
         combo.addItems(list(settings.PRESETS))
         combo.setCurrentText(current)
-        layout.addRow("Export quality", combo)
+        layout.addRow("Export quality (STL only)", combo)
 
         # Slicer executable: launching after export is off while empty.
         slicer_edit = QtWidgets.QLineEdit(settings.slicer_path(), dialog)
