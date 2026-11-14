@@ -1,7 +1,9 @@
-# "Send to slicer" command: export, then hand the file to the
-# configured slicer executable. One click, like Fusion's Make tab.
+# "Send to slicer" command: export the selection to a temporary STL
+# - no save dialog, like Fusion's Make/print utility - and open it
+# in the configured slicer.
 
 import os
+import tempfile
 
 import FreeCAD as App
 import FreeCADGui
@@ -9,7 +11,7 @@ import FreeCADGui
 from MakeWorkbench import exporter
 from MakeWorkbench import launcher
 from MakeWorkbench import settings
-from MakeWorkbench.export_command import export_via_dialog
+from MakeWorkbench.export_command import get_printable_selection
 
 
 class PrintCommand:
@@ -35,14 +37,27 @@ class PrintCommand:
                 " Make settings.\n")
             return
 
-        path = export_via_dialog("Send to slicer")
-        if not path:
+        obj = get_printable_selection()
+        if not obj:
+            return
+
+        # A separate process can only be handed a real file, so write
+        # to the OS temp folder silently. One fixed name: every send
+        # overwrites the same file, so the temp folder never grows.
+        path = os.path.join(tempfile.gettempdir(), "MakeWorkbenchExport.stl")
+        try:
+            linear_dev, angular_dev = settings.deviation()
+            exporter.export_to_stl(obj, path, linear_dev, angular_dev)
+        except Exception as exc:
+            App.Console.PrintError(
+                "Make: temporary export failed: %s\n" % exc)
             return
 
         try:
             launcher.launch(slicer, path)
             App.Console.PrintMessage(
-                "Make: opened in %s\n" % os.path.basename(slicer))
+                "Make: sent '%s' to %s (temp file: %s)\n"
+                % (obj.Label, os.path.basename(slicer), path))
         except OSError as exc:
             App.Console.PrintError(
                 "Make: could not start slicer: %s\n" % exc)

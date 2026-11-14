@@ -12,21 +12,27 @@ from MakeWorkbench import exporter
 from MakeWorkbench import settings
 
 
-def export_via_dialog(window_title="Export STL"):
-    """Interactive export: selection -> save dialog -> STL.
-
-    Returns the written file path, or None if nothing printable is
-    selected, the dialog is cancelled, or the export fails (failures
-    are reported to the console). Shared with the Send-to-slicer
-    command, so export behavior cannot drift between the two.
-    """
+def get_printable_selection():
+    """The first printable selected object, or None (with a console
+    error explaining why). Shared by both toolbar commands."""
     printable = [o for o in FreeCADGui.Selection.getSelection()
                  if exporter.has_printable_shape(o)]
     if not printable:
         App.Console.PrintError("Make: select a body or part first.\n")
         return None
+    return printable[0]
 
-    obj = printable[0]
+
+def export_via_dialog(window_title="Export STL"):
+    """Interactive export: selection -> save dialog -> STL.
+
+    Returns the written file path, or None if nothing printable is
+    selected, the dialog is cancelled, or the export fails (failures
+    are reported to the console).
+    """
+    obj = get_printable_selection()
+    if not obj:
+        return None
 
     # Qt directly, because this build has no
     # FreeCADGui.getSaveFileName (PLAN.md, M0 lessons).
