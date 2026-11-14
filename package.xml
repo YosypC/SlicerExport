@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
+  <name>Slicer Export</name>
+  <description>Send parts and bodies straight to a 3D printing slicer. One-click hand-off of the selection to the slicer, or export to STL and STEP files with a configurable mesh quality.</description>
+  <version>0.1.0</version>
+  <date>2026-11-14</date>
+  <maintainer email="programming.yosyp@outlook.com">Giuseppe Congestrì</maintainer>
+  <license file="LICENSE">LGPL-3.0-or-later</license>
+  <url type="repository">TODO-REPOSITORY-URL</url>
+  <url type="bugtracker">TODO-BUGTRACKER-URL</url>
+  <tag>3d print</tag>
+  <tag>slicer</tag>
+  <tag>stl</tag>
+  <tag>export</tag>
+  <tag>step</tag>
+  <content>
+    <workbench>
+      <classname>SlicerExport</classname>
+      <icon>Resources/icons/slicer_export.svg</icon>
+      <subdirectory>.</subdirectory>
+    </workbench>
+  </content>
+</package>
