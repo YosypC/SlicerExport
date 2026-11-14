@@ -37,7 +37,12 @@ class SettingsCommand:
 
         # Slicer executable: launching after export is off while empty.
         slicer_edit = QtWidgets.QLineEdit(settings.slicer_path(), dialog)
-        browse = QtWidgets.QPushButton("...", dialog)
+        # QToolButton, not QPushButton: FreeCAD's global stylesheet
+        # forces QPushButton to min-width 80px, which beats any fixed
+        # width we set. QToolButton is FreeCAD's small utility button.
+        browse = QtWidgets.QToolButton(dialog)
+        browse.setText("...")
+        browse.setFixedWidth(22)
         browse.clicked.connect(
             lambda: slicer_edit.setText(_browse_executable(dialog)))
         path_row = QtWidgets.QHBoxLayout()
