@@ -1,6 +1,6 @@
 # Pure export logic: object -> STL on disk. No GUI code here (PLAN.md, N3).
 
-import Mesh
+import MeshPart
 
 
 def has_printable_shape(obj):
@@ -20,12 +20,15 @@ def default_filename(obj):
     return clean.strip() or "part"
 
 
-def export_to_stl(obj, path, deviation=0.1):
+def export_to_stl(obj, path, linear_dev, angular_dev):
     """Mesh obj and write it to path as STL. Raises on failure.
 
-    deviation is the tessellation tolerance in mm. The R2 quality
-    presets (PLAN.md) replace it in M2; they need MeshPart.meshFromShape
-    for separate linear/angular control.
+    linear_dev [mm] and angular_dev [rad] are the OCC deflections;
+    settings.py supplies them from the quality presets (PLAN.md, R2).
     """
-    Mesh.export([obj], path, deviation)
+    mesh = MeshPart.meshFromShape(Shape=obj.Shape,
+                                  LinearDeflection=linear_dev,
+                                  AngularDeflection=angular_dev,
+                                  Relative=False)
+    mesh.write(path)
     return path

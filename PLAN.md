@@ -121,6 +121,13 @@ One honest rule: every bug fixed gets a test that would have caught it.
 - **M1 — export (DONE, verified STL in OrcaSlicer)**: button exports the
   selected body to STL via a save dialog, at a hardcoded quality. Benchmark of
   Coarse/Standard/Fine deviations done; numbers locked into R2 above.
+- **M2 — settings (DONE, verified presets reproduce benchmark facet counts)**:
+  quality presets stored in FreeCAD's parameter system, chosen via a small
+  settings dialog. Slicer path moved to M3 where its consumer lives. The
+  save dialog remembers the last export folder.
+- **M3 — launch slicer**: pass the exported file to the configured executable.
+- **M4 — polish**: task panel with quality selector + filename preview,
+  single-click "Export & Print", error messages a human can read.
 
 ### Lessons from M0 (keep: they explain the code's shape)
 
@@ -133,8 +140,3 @@ One honest rule: every bug fixed gets a test that would have caught it.
 - The MCP `execute_code` channel runs Python through its own path and cannot
   reproduce workbench loading. Use it for geometry work (M1+), not for
   testing InitGui.
-- **M2 — settings**: quality presets (plus slicer path for R3) configurable in
-  FreeCAD preferences.
-- **M3 — launch slicer**: pass the exported file to the configured executable.
-- **M4 — polish**: task panel with quality selector + filename preview,
-  single-click "Export & Print", error messages a human can read.
