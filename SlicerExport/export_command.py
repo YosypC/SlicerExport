@@ -1,6 +1,6 @@
-# Export toolbar command and the interactive export routine shared
-# with the Send-to-slicer command. Owns everything the user sees;
-# the actual export logic is in exporter.py.
+# Export toolbar command and the interactive export routine.
+# Owns everything the user sees; the actual export logic is in
+# exporter.py.
 
 import os
 
@@ -8,9 +8,9 @@ import FreeCAD as App
 import FreeCADGui
 from PySide6 import QtWidgets
 
-from MakeWorkbench import exporter
-from MakeWorkbench import settings
-from MakeWorkbench import icon
+from SlicerExport import exporter
+from SlicerExport import settings
+from SlicerExport import icon
 
 
 def get_printable_selection():
@@ -19,13 +19,14 @@ def get_printable_selection():
     printable = [o for o in FreeCADGui.Selection.getSelection()
                  if exporter.has_printable_shape(o)]
     if not printable:
-        App.Console.PrintError("Make: select a body or part first.\n")
+        App.Console.PrintError(
+            "Slicer Export: select a body or part first.\n")
         return None
     return printable[0]
 
 
-def export_via_dialog(window_title="Export STL"):
-    """Interactive export: selection -> save dialog -> STL.
+def export_via_dialog():
+    """Interactive export: selection -> save dialog -> file.
 
     Returns the written file path, or None if nothing printable is
     selected, the dialog is cancelled, or the export fails (failures
@@ -42,7 +43,7 @@ def export_via_dialog(window_title="Export STL"):
     suggested = os.path.join(settings.last_dir(),
                              exporter.default_filename(obj))
     path, chosen_filter = QtWidgets.QFileDialog.getSaveFileName(
-        FreeCADGui.getMainWindow(), window_title, suggested,
+        FreeCADGui.getMainWindow(), "Export", suggested,
         "STL Mesh (*.stl);;STEP (*.step *.stp)")
     if not path:
         return None
@@ -54,17 +55,18 @@ def export_via_dialog(window_title="Export STL"):
             linear_dev, angular_dev = settings.deviation()
             exporter.export_to_stl(obj, path, linear_dev, angular_dev)
     except Exception as exc:
-        App.Console.PrintError("Make: export failed: %s\n" % exc)
+        App.Console.PrintError(
+            "Slicer Export: export failed: %s\n" % exc)
         return None
 
     settings.set_last_dir(os.path.dirname(path))
     App.Console.PrintMessage(
-        "Make: exported '%s' -> %s\n" % (obj.Label, path))
+        "Slicer Export: exported '%s' -> %s\n" % (obj.Label, path))
     return path
 
 
 class ExportCommand:
-    """Export the selected body or part to STL."""
+    """Export the selected body or part to STL or STEP."""
 
     def GetResources(self):
         return {

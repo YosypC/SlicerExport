@@ -1,6 +1,6 @@
 # User settings, stored in FreeCAD's parameter system (persists across
 # restarts, per user - not per document). Keys live under
-# "User parameter:BaseApp/Preferences/MakeWorkbench".
+# "User parameter:BaseApp/Preferences/SlicerExport".
 
 # NOTE: FreeCAD is imported inside _params, not at module top: it only
 # exists inside FreeCAD, and a top-level import would break the
@@ -23,7 +23,7 @@ DEFAULT_SEND_FORMAT = "STL"
 def _params():
     import FreeCAD as App
     return App.ParamGet(
-        "User parameter:BaseApp/Preferences/MakeWorkbench")
+        "User parameter:BaseApp/Preferences/SlicerExport")
 
 
 def quality_preset():

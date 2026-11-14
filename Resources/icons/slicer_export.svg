@@ -1,0 +1,13 @@
+<!-- Workbench icon placeholder: export cube, red arrow - matching
+     the toolbar icon family. To be replaced by the author. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <path d="M5 1 L10 3.5 L10 8.5 L5 11 L0 8.5"
+        transform="translate(1,2)" fill="none"
+        stroke="#4a90d9" stroke-width="1.3" stroke-linejoin="round"/>
+  <path d="M1 3.5 L5 5.5 L9 3.5 M5 5.5 V10"
+        transform="translate(0,2)" fill="none"
+        stroke="#4a90d9" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M9.5 8.5 H13.5 M11.7 6.7 L13.7 8.5 L11.7 10.3"
+        fill="none" stroke="#d94a4a" stroke-width="1.3"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

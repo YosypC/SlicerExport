@@ -1,7 +1,7 @@
-# Layer 1 tests for MakeWorkbench/exporter.py.
+# Layer 1 tests for SlicerExport/exporter.py.
 # No FreeCAD here: fakes stand in for its objects.
 
-from MakeWorkbench import exporter
+from SlicerExport import exporter
 
 
 class FakeBody:

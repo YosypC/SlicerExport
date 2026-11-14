@@ -1,10 +1,10 @@
-# Layer 1 tests for MakeWorkbench/settings.py.
+# Layer 1 tests for SlicerExport/settings.py.
 # Only the parts that do not touch FreeCAD's parameter system:
 # those would need FreeCAD running (testing layer 2, PLAN.md).
 
 import pytest
 
-from MakeWorkbench import settings
+from SlicerExport import settings
 
 
 # --- preset validation --------------------------------------------

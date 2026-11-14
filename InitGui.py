@@ -1,10 +1,15 @@
 # FreeCAD entry point, loaded at startup by GUI builds only.
-# Keep this thin: all logic lives in the MakeWorkbench package.
+# Keep this thin: all logic lives in the SlicerExport package.
+#
+# LOADER QUIRK (this dev build, PLAN.md M0 lessons): top-level
+# assignments in this file do not reliably reach the class body or
+# the methods. Everything the workbench needs elsewhere is computed
+# locally, inside the scope that uses it.
 
 import os
 import sys
 
-import FreeCAD as App
+import FreeCAD
 import FreeCADGui
 
 # The base class is exposed differently across FreeCAD versions.
@@ -14,42 +19,58 @@ except ImportError:
     from builtins import Workbench
 
 
-class MakeWorkbench(Workbench):
-    """Quick export of parts and bodies for 3D printing."""
+class SlicerExport(Workbench):
+    """Send bodies and parts to a 3D printing slicer."""
 
-    MenuText = "Make"
+    # The class NAME ("SlicerExport") is the workbench's internal ID.
+    MenuText = "Slicer Export"
     ToolTip = "Export parts and bodies for a 3D printing slicer"
+
+    # Workbench icon in the dropdown. Computed inline because module
+    # constants are not visible here (loader quirk, see file header).
+    try:
+        _dir = os.path.dirname(os.path.abspath(__file__))
+    except NameError:
+        # No __file__ in this build's InitGui namespace.
+        import FreeCAD as _App
+        _dir = os.path.join(_App.getUserAppDataDir(),
+                            "Mod", "SlicerExport")
+    _icon = os.path.join(_dir, "Resources", "icons", "slicer_export.svg")
+    Icon = _icon if os.path.exists(_icon) else ""
 
     def Initialize(self):
         """Runs once, on first activation."""
-        # This dev build loads InitGui without __file__ (PLAN.md, M0
-        # lessons); fall back to the user Mod directory. The workbench
-        # must be installed as Mod/MakeWorkbench for that to work.
-        if "__file__" in globals():
+        # Same folder logic as above, recomputed locally.
+        try:
             mod_dir = os.path.dirname(os.path.abspath(__file__))
-        else:
-            mod_dir = os.path.join(
-                App.getUserAppDataDir(), "Mod", "MakeWorkbench")
-
+        except NameError:
+            import FreeCAD as App
+            mod_dir = os.path.join(App.getUserAppDataDir(),
+                                   "Mod", "SlicerExport")
         if mod_dir not in sys.path:
             sys.path.insert(0, mod_dir)
 
         # Import commands here, not at module top (PLAN.md, M0 lessons).
-        from MakeWorkbench.export_command import ExportCommand
-        from MakeWorkbench.print_command import PrintCommand
-        from MakeWorkbench.settings_command import SettingsCommand
+        from SlicerExport.export_command import ExportCommand
+        from SlicerExport.print_command import PrintCommand
+        from SlicerExport.settings_command import SettingsCommand
 
         # Command names are permanent identifiers; never rename them.
-        FreeCADGui.addCommand("Make_ExportSTL", ExportCommand())
-        FreeCADGui.addCommand("Make_Print", PrintCommand())
-        FreeCADGui.addCommand("Make_Settings", SettingsCommand())
+        FreeCADGui.addCommand("SlicerExport_Export", ExportCommand())
+        FreeCADGui.addCommand("SlicerExport_Send", PrintCommand())
+        FreeCADGui.addCommand("SlicerExport_Settings", SettingsCommand())
 
         self.appendToolbar(
-            "Make tools", ["Make_ExportSTL", "Make_Print", "Make_Settings"])
+            "Slicer Export tools",
+            ["SlicerExport_Export", "SlicerExport_Send",
+             "SlicerExport_Settings"])
         self.appendMenu(
-            "Make", ["Make_ExportSTL", "Make_Print", "Make_Settings"])
+            "Slicer Export",
+            ["SlicerExport_Export", "SlicerExport_Send",
+             "SlicerExport_Settings"])
 
-        App.Console.PrintMessage("Make workbench initialized.\n")
+        FreeCAD.Console.PrintMessage(
+            "Slicer Export workbench initialized.\n")
 
     def Activated(self):
         pass
@@ -58,4 +79,4 @@ class MakeWorkbench(Workbench):
         pass
 
 
-FreeCADGui.addWorkbench(MakeWorkbench())
+FreeCADGui.addWorkbench(SlicerExport())

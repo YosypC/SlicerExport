@@ -1,19 +1,12 @@
-# FreeCAD "Make" Workbench — Plan
+# Slicer Export (FreeCAD workbench) — Plan
 
-A simple FreeCAD workbench that solves the same functions as the "Make" tab on
+Formerly "Make Workbench": renamed before first release for clarity
+("Make" was invisible in addon searches; the rename happened before
+any command ID shipped - see roadmap).
+
+A small FreeCAD workbench that solves the same functions as the "Make" tab on
 Autodesk Fusion: quickly export a part or body, ready to be sent off to a 3D
 printing slicer.
-
-Goals for the project as a whole:
-
-- Maintained by a human without AI assistance.
-- Code written to be readable by a programming novice. Comments explain the
-  *why* and the Python idioms, not just the syntax.
-- No external Python dependencies beyond what ships with FreeCAD.
-- Scope grows step by step. Each milestone is independently usable.
-
-Assumptions: FreeCAD 1.0+, Windows as primary platform (code kept
-cross-platform anyway).
 
 ## What Fusion's "Make" tab actually does
 
@@ -53,8 +46,10 @@ Everything else (presets, multi-body, orientations) is sugar.
   executable with the exported file as argument. The hand-off file format
   is configurable (STL default, STEP optional); the quality preset applies
   to the STL variant only.
-- R4: Live in FreeCAD's UI as a proper workbench (toolbar icon + a small task
-  panel), not a macro run from the Python console.
+- R4: Live in FreeCAD's UI as a proper workbench (toolbar icons + buttons and
+  a settings dialog), not a macro run from the Python console. The task panel
+  originally imagined here was dropped (M4): one button per action plus a
+  settings dialog covers the need.
 
 Filenames derive from the body's name; the save destination uses FreeCAD's
 native save dialog. No export-folder configuration in v1 — dropped in favor of
@@ -88,15 +83,19 @@ to maintain and version in git.
 ## Architecture
 
 ```
-FreeCADWorkbench/
-├── InitGui.py          # FreeCAD entry point; registers workbench, toolbar, menus
-├── MakeWorkbench/      # (name TBD) the actual Python package
-│   ├── exporter.py     # PURE logic: Body + quality -> STL on disk. No GUI.
-│   ├── settings.py     # read/write user preferences (quality preset, slicer path)
-│   ├── launcher.py     # run the slicer executable (subprocess, guarded)
-│   └── task_panel.py   # the ONLY file that touches FreeCAD's GUI
-└── tests/
-    └── test_exporter.py
+SlicerExport (repo root, installed as Mod/SlicerExport)/
+├── InitGui.py              # entry point: registers workbench, toolbar, menu
+├── SlicerExport/           # the Python package (all logic)
+│   ├── exporter.py         # PURE logic: object -> STL/STEP. No GUI.
+│   ├── settings.py         # user preferences (quality, slicer, format)
+│   ├── launcher.py         # start the slicer executable (subprocess)
+│   ├── export_command.py   # Export button + shared selection/dialog code
+│   ├── print_command.py    # Send-to-slicer button
+│   └── settings_command.py # Settings dialog (ONLY GUI code beyond InitGui)
+├── Resources/icons/        # toolbar and workbench SVG icons
+├── tests/                  # layer 1: plain-Python pytest cases
+├── PLAN.md                 # this document: requirements, decisions, history
+└── TESTING.md              # layer 3: manual GUI smoke checklist
 ```
 
 Key idea: the GUI layer is a thin skin over pure logic. `exporter.py` takes a
@@ -132,10 +131,11 @@ One honest rule: every bug fixed gets a test that would have caught it.
   settings dialog. Slicer path moved to M3 where its consumer lives. The
   save dialog remembers the last export folder.
 - **M3 — send to slicer (DONE, verified: OrcaSlicer opens with the part,
-  no save dialog)**: writes a single fixed temporary STL
-  (MakeWorkbenchExport.stl) and launches the configured slicer with it,
-  one click like Fusion's Make tab. Slicer path lives in settings.
-  Export STL stays dialog-based for when a kept file is wanted.
+  no save dialog)**: writes a single fixed temporary STL and launches the
+  configured slicer with it, one click like Fusion's Make tab. Slicer path
+  lives in settings. Export stays dialog-based for when a kept file is
+  wanted. (Temp file name today: SlicerExport.<stl|step> - the M5 format
+  setting extended the fixed base name.)
 - **M4 — polish (DONE)**: toolbar icons (user will replace the
   placeholders), TESTING.md smoke checklist, consistent error text.
   The planned task panel was dropped: one button + settings suffice.
@@ -146,11 +146,20 @@ One honest rule: every bug fixed gets a test that would have caught it.
 ### Lessons from M0 (keep: they explain the code's shape)
 
 - This dev build (26.3) loads InitGui.py through a namespace that provides no
-  `__file__`. InitGui therefore falls back to
-  `App.getUserAppDataDir() + "Mod" + "MakeWorkbench"` to find its own folder,
-  which means the workbench MUST be installed under that exact folder name.
+  `__file__`, and top-level assignments in InitGui do not reach the class
+  body or the methods. InitGui therefore computes its folder and icon
+  locally inside each scope and must be installed under the exact folder
+  name `Mod/SlicerExport`.
 - Commands are imported inside `Initialize()`, never at the top of InitGui.
   This is also the convention used by mature FreeCAD workbenches.
 - The MCP `execute_code` channel runs Python through its own path and cannot
   reproduce workbench loading. Use it for geometry work (M1+), not for
   testing InitGui.
+
+## Renames
+
+- **"Make Workbench" -> "Slicer Export" (pre-release)**: workbench ID
+  `SlicerExport`, folder `SlicerExport`, command IDs `SlicerExport_*`,
+  settings under `User parameter:BaseApp/Preferences/SlicerExport`.
+  Stored user preferences reset once at the rename (only the author's
+  existed). The old "Make:" console prefix became "Slicer Export:".

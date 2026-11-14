@@ -1,4 +1,4 @@
-# "Send to slicer" command: export the selection to a temporary STL
+# "Send to slicer" command: export the selection to a temporary file
 # - no save dialog, like Fusion's Make/print utility - and open it
 # in the configured slicer.
 
@@ -8,11 +8,11 @@ import tempfile
 import FreeCAD as App
 import FreeCADGui
 
-from MakeWorkbench import exporter
-from MakeWorkbench import icon
-from MakeWorkbench import launcher
-from MakeWorkbench import settings
-from MakeWorkbench.export_command import get_printable_selection
+from SlicerExport import exporter
+from SlicerExport import icon
+from SlicerExport import launcher
+from SlicerExport import settings
+from SlicerExport.export_command import get_printable_selection
 
 
 class PrintCommand:
@@ -35,8 +35,8 @@ class PrintCommand:
         slicer = settings.slicer_path()
         if not slicer:
             App.Console.PrintError(
-                "Make: no slicer configured - set one in"
-                " Make settings.\n")
+                "Slicer Export: no slicer configured - set one in"
+                " Slicer Export settings.\n")
             return
 
         obj = get_printable_selection()
@@ -50,7 +50,7 @@ class PrintCommand:
         # preset applies to STL only.
         fmt = settings.send_format()
         path = os.path.join(tempfile.gettempdir(),
-                            "MakeWorkbenchExport." + fmt.lower())
+                            "SlicerExport." + fmt.lower())
         try:
             if fmt == "STEP":
                 exporter.export_to_step(obj, path)
@@ -59,14 +59,14 @@ class PrintCommand:
                 exporter.export_to_stl(obj, path, linear_dev, angular_dev)
         except Exception as exc:
             App.Console.PrintError(
-                "Make: temporary export failed: %s\n" % exc)
+                "Slicer Export: temporary export failed: %s\n" % exc)
             return
 
         try:
             launcher.launch(slicer, path)
             App.Console.PrintMessage(
-                "Make: sent '%s' to %s (temp file: %s)\n"
+                "Slicer Export: sent '%s' to %s (temp file: %s)\n"
                 % (obj.Label, os.path.basename(slicer), path))
         except OSError as exc:
             App.Console.PrintError(
-                "Make: could not start slicer: %s\n" % exc)
+                "Slicer Export: could not start slicer: %s\n" % exc)

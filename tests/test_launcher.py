@@ -1,4 +1,4 @@
-# Layer 1 tests for MakeWorkbench/launcher.py.
+# Layer 1 tests for SlicerExport/launcher.py.
 # Cross-platform: uses Python itself as the launched process, so no
 # Windows-only executables are involved.
 
@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from MakeWorkbench import launcher
+from SlicerExport import launcher
 
 
 def test_missing_executable_raises():

@@ -5,17 +5,18 @@ import FreeCAD as App
 import FreeCADGui
 from PySide6 import QtWidgets
 
-from MakeWorkbench import settings
-from MakeWorkbench import icon
+from SlicerExport import settings
+from SlicerExport import icon
 
 
 class SettingsCommand:
-    """Open the Make workbench settings dialog."""
+    """Open the Slicer Export settings dialog."""
 
     def GetResources(self):
         return {
             "MenuText": "Settings",
-            "ToolTip": "Export quality and other Make settings.",
+            "ToolTip": "Export quality and other Slicer Export"
+                       " settings.",
             "Pixmap": icon("settings.svg"),
         }
 
@@ -24,7 +25,7 @@ class SettingsCommand:
 
     def Activated(self):
         dialog = QtWidgets.QDialog(FreeCADGui.getMainWindow())
-        dialog.setWindowTitle("Make workbench settings")
+        dialog.setWindowTitle("Slicer Export settings")
         layout = QtWidgets.QFormLayout(dialog)
 
         # combo pre-set to the stored value; PRESETS order is the
@@ -71,7 +72,7 @@ class SettingsCommand:
             settings.set_slicer_path(slicer_edit.text().strip())
             settings.set_send_format(send_combo.currentText())
             App.Console.PrintMessage(
-                "Make: settings saved\n")
+                "Slicer Export: settings saved\n")
 
 
 def _browse_executable(dialog):

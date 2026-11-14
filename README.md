@@ -1,32 +1,33 @@
-# Make Workbench
+# Slicer Export
 
 A small FreeCAD workbench for quickly exporting parts and bodies to be
-sent off to a 3D printing slicer - the FreeCAD answer to Fusion's
-"Make" tab. See `PLAN.md` for requirements and the milestone roadmap.
+sent off to a 3D printing slicer. See `PLAN.md` for requirements and the
+milestone roadmap.
 
 ## What it does
 
-- **Export STL** - write the selected body or part to an STL file.
-  Uses the quality preset from settings; the save dialog starts in
-  the folder of the last export.
-- **Send to slicer** - write a temporary STL (no dialog) and open it
-  directly in the configured slicer. One click.
-- **Settings** - export quality (Coarse / Standard / Fine) and the
-  slicer executable.
+- **Export** - writes the selected body or part to an STL or STEP file. STL export's quality can be selected.
+- **Send to slicer** - writes a temporary STL or STEP to OS's temporary folder and opens it directly in the configured slicer. One click!
+- **Settings** - export quality (Coarse / Standard / Fine), the slicer executable, and the Send to slicer format.
 
 ## Installing for development
 
-FreeCAD loads workbenches from its "Mod" directory. Link this folder
-into Mod instead of copying files (they would go stale):
+FreeCAD loads workbenches from its user "Mod" directory. Don't copy
+files there - copies go stale. Link this folder in once, under the
+name `SlicerExport` (the InitGui fallback depends on the name -
+see PLAN.md, M0 lessons).
 
-    cd <FreeCAD's user Mod folder>
-    mklink /J MakeWorkbench C:\...\FreeCAD_3D_printing_project
+Find your Mod folder first: run `FreeCAD.getUserAppDataDir()` in
+FreeCAD's Python console (View -> Panels -> Python console) and
+append `Mod`. Then, from the repo's parent folder:
 
-Run `mklink` in `cmd.exe`, not Git Bash. The workbench must live under
-the name `MakeWorkbench` - the InitGui fallback depends on it
-(PLAN.md, M0 lessons). FreeCAD's user Mod folder is printed under
-Edit -> Preferences -> General -> Additional module paths, or run
-`FreeCAD.getUserAppDataDir()` in the Python console and append `Mod`.
+- **Windows** (`cmd.exe`):
+
+      mklink /J "<Mod>\SlicerExport" "<repo folder>"
+
+- **Linux / macOS**:
+
+      ln -s "<repo folder>" "<Mod>/SlicerExport"
 
 ## Testing
 
