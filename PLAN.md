@@ -50,7 +50,9 @@ Everything else (presets, multi-body, orientations) is sugar.
   knobs). Mesh.export's single tolerance argument is NOT used - it silently
   plateaus because the default angular deflection dominates on curved faces.
 - R3: Optional "open in slicer" action: launch a user-configured slicer
-  executable with the exported file as argument.
+  executable with the exported file as argument. The hand-off file format
+  is configurable (STL default, STEP optional); the quality preset applies
+  to the STL variant only.
 - R4: Live in FreeCAD's UI as a proper workbench (toolbar icon + a small task
   panel), not a macro run from the Python console.
 

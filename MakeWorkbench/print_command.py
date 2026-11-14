@@ -44,12 +44,19 @@ class PrintCommand:
             return
 
         # A separate process can only be handed a real file, so write
-        # to the OS temp folder silently. One fixed name: every send
-        # overwrites the same file, so the temp folder never grows.
-        path = os.path.join(tempfile.gettempdir(), "MakeWorkbenchExport.stl")
+        # to the OS temp folder silently. One fixed base name: every
+        # send overwrites the same file, so the temp folder never
+        # grows. Format (STL/STEP) follows Settings; the quality
+        # preset applies to STL only.
+        fmt = settings.send_format()
+        path = os.path.join(tempfile.gettempdir(),
+                            "MakeWorkbenchExport." + fmt.lower())
         try:
-            linear_dev, angular_dev = settings.deviation()
-            exporter.export_to_stl(obj, path, linear_dev, angular_dev)
+            if fmt == "STEP":
+                exporter.export_to_step(obj, path)
+            else:
+                linear_dev, angular_dev = settings.deviation()
+                exporter.export_to_stl(obj, path, linear_dev, angular_dev)
         except Exception as exc:
             App.Console.PrintError(
                 "Make: temporary export failed: %s\n" % exc)

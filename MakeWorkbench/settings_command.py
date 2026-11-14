@@ -50,6 +50,12 @@ class SettingsCommand:
         path_row.addWidget(browse)
         layout.addRow("Slicer executable (optional)", path_row)
 
+        # File format handed to the slicer by Send to slicer.
+        send_combo = QtWidgets.QComboBox(dialog)
+        send_combo.addItems(list(settings.SEND_FORMATS))
+        send_combo.setCurrentText(settings.send_format())
+        layout.addRow("Send-to-slicer format", send_combo)
+
         # Standard Qt OK/Cancel pair, wired to close the dialog.
         buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.Ok
@@ -63,6 +69,7 @@ class SettingsCommand:
         if dialog.exec() == QtWidgets.QDialog.Accepted:
             settings.set_quality_preset(combo.currentText())
             settings.set_slicer_path(slicer_edit.text().strip())
+            settings.set_send_format(send_combo.currentText())
             App.Console.PrintMessage(
                 "Make: settings saved\n")
 

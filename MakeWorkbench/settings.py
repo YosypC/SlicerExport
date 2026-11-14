@@ -15,6 +15,10 @@ PRESETS = {
 }
 DEFAULT_PRESET = "Standard"
 
+# File formats Send-to-slicer may hand to the slicer (R3).
+SEND_FORMATS = ("STL", "STEP")
+DEFAULT_SEND_FORMAT = "STL"
+
 
 def _params():
     import FreeCAD as App
@@ -60,3 +64,16 @@ def slicer_path():
 def set_slicer_path(path):
     """Store the slicer executable path. Empty disables launching."""
     _params().SetString("SlicerPath", path)
+
+
+def send_format():
+    """The file format for Send-to-slicer ('STL' or 'STEP')."""
+    name = _params().GetString("SendFormat", DEFAULT_SEND_FORMAT)
+    return name if name in SEND_FORMATS else DEFAULT_SEND_FORMAT
+
+
+def set_send_format(name):
+    """Store the send format; refuses names not in SEND_FORMATS."""
+    if name not in SEND_FORMATS:
+        raise ValueError("unknown send format: %r" % name)
+    _params().SetString("SendFormat", name)

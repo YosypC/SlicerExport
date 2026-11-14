@@ -32,6 +32,7 @@ covers what automation cannot: the GUI itself.
 
 - [] No save dialog appears
 - [] OrcaSlicer opens directly with the part loaded
+- [] The sent file uses the format chosen in Settings (STL or STEP)
 - [] Console prints `Make: sent '<label>' to ... (temp file: ...)`
 - [] With no slicer configured (clear the setting to test): console
       prints the "no slicer configured" error, nothing opens

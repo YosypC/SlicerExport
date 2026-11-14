@@ -26,3 +26,13 @@ def test_deviation_returns_preset_pair():
 def test_deviation_with_unknown_preset_raises():
     with pytest.raises(KeyError):
         settings.deviation("Bogus")
+
+
+# --- send format --------------------------------------------------
+
+def test_send_formats_are_stl_and_step():
+    assert settings.SEND_FORMATS == ("STL", "STEP")
+
+def test_unknown_send_format_is_rejected():
+    with pytest.raises(ValueError):
+        settings.set_send_format("Bogus")
