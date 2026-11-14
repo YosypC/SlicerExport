@@ -6,8 +6,8 @@
   <date>2026-11-14</date>
   <maintainer email="programming.yosyp@outlook.com">Giuseppe Congestrì</maintainer>
   <license file="LICENSE">LGPL-3.0-or-later</license>
-  <url type="repository">TODO-REPOSITORY-URL</url>
-  <url type="bugtracker">TODO-BUGTRACKER-URL</url>
+  <url type="repository">https://github.com/YosypC/SlicerExport</url>
+  <url type="bugtracker">https://github.com/YosypC/SlicerExport/issues</url>
   <tag>3d print</tag>
   <tag>slicer</tag>
   <tag>stl</tag>
