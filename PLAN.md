@@ -126,7 +126,11 @@ One honest rule: every bug fixed gets a test that would have caught it.
   quality presets stored in FreeCAD's parameter system, chosen via a small
   settings dialog. Slicer path moved to M3 where its consumer lives. The
   save dialog remembers the last export folder.
-- **M3 — launch slicer**: pass the exported file to the configured executable.
+- **M3 — send to slicer (DONE, verified: OrcaSlicer opens with the part,
+  no save dialog)**: writes a single fixed temporary STL
+  (MakeWorkbenchExport.stl) and launches the configured slicer with it,
+  one click like Fusion's Make tab. Slicer path lives in settings.
+  Export STL stays dialog-based for when a kept file is wanted.
 - **M4 — polish**: task panel with quality selector + filename preview,
   single-click "Export & Print", error messages a human can read.
 
