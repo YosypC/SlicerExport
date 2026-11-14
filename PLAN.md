@@ -103,7 +103,8 @@ tested without launching FreeCAD's interface.
 
 One honest rule: every bug fixed gets a test that would have caught it.
 
-- **Layer 1 — logic tests, no FreeCAD needed**: filename generation from a
+- **Layer 1 — logic tests, no FreeCAD needed (IMPLEMENTED: tests/,
+  run with `uvx pytest tests`)**: filename generation from a
   body's name, quality preset -> deviation mapping, bad-input handling
   (no selection, non-solid selected). Plain Python, run in seconds.
 - **Layer 2 — FreeCAD headless tests**: run `FreeCADCmd` (the console build,

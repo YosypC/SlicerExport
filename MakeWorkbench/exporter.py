@@ -1,6 +1,8 @@
 # Pure export logic: object -> STL on disk. No GUI code here (PLAN.md, N3).
 
-import MeshPart
+# NOTE: MeshPart is imported inside export_to_stl, not at module top:
+# it only exists inside FreeCAD, and a top-level import would break
+# the plain-Python tests in tests/ (PLAN.md, testing layer 1).
 
 
 def has_printable_shape(obj):
@@ -26,6 +28,7 @@ def export_to_stl(obj, path, linear_dev, angular_dev):
     linear_dev [mm] and angular_dev [rad] are the OCC deflections;
     settings.py supplies them from the quality presets (PLAN.md, R2).
     """
+    import MeshPart
     mesh = MeshPart.meshFromShape(Shape=obj.Shape,
                                   LinearDeflection=linear_dev,
                                   AngularDeflection=angular_dev,

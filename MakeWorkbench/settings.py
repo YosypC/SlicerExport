@@ -2,7 +2,9 @@
 # restarts, per user - not per document). Keys live under
 # "User parameter:BaseApp/Preferences/MakeWorkbench".
 
-import FreeCAD as App
+# NOTE: FreeCAD is imported inside _params, not at module top: it only
+# exists inside FreeCAD, and a top-level import would break the
+# plain-Python tests in tests/ (PLAN.md, testing layer 1).
 
 # Preset -> (LinearDeflection, AngularDeflection); values locked by the
 # M1 benchmark (PLAN.md, requirement R2).
@@ -15,6 +17,7 @@ DEFAULT_PRESET = "Standard"
 
 
 def _params():
+    import FreeCAD as App
     return App.ParamGet(
         "User parameter:BaseApp/Preferences/MakeWorkbench")
 
