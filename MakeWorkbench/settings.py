@@ -47,3 +47,13 @@ def last_dir():
 def set_last_dir(path):
     """Remember the folder of the last successful export."""
     _params().SetString("LastExportDir", path)
+
+
+def slicer_path():
+    """Configured slicer executable ('' -> launch after export off)."""
+    return _params().GetString("SlicerPath", "")
+
+
+def set_slicer_path(path):
+    """Store the slicer executable path. Empty disables launching."""
+    _params().SetString("SlicerPath", path)

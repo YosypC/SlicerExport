@@ -33,6 +33,16 @@ class SettingsCommand:
         combo.setCurrentText(current)
         layout.addRow("Export quality", combo)
 
+        # Slicer executable: launching after export is off while empty.
+        slicer_edit = QtWidgets.QLineEdit(settings.slicer_path(), dialog)
+        browse = QtWidgets.QPushButton("...", dialog)
+        browse.clicked.connect(
+            lambda: slicer_edit.setText(_browse_executable(dialog)))
+        path_row = QtWidgets.QHBoxLayout()
+        path_row.addWidget(slicer_edit)
+        path_row.addWidget(browse)
+        layout.addRow("Slicer executable (optional)", path_row)
+
         # Standard Qt OK/Cancel pair, wired to close the dialog.
         buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.Ok
@@ -45,6 +55,13 @@ class SettingsCommand:
         # value tells which button was used.
         if dialog.exec() == QtWidgets.QDialog.Accepted:
             settings.set_quality_preset(combo.currentText())
+            settings.set_slicer_path(slicer_edit.text().strip())
             App.Console.PrintMessage(
-                "Make: export quality preset -> %s\n"
-                % combo.currentText())
+                "Make: settings saved\n")
+
+
+def _browse_executable(dialog):
+    """File picker for the slicer executable; empty on cancel."""
+    path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        dialog, "Choose slicer executable", "", "Executable (*.exe)")
+    return path

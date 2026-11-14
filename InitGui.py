@@ -37,17 +37,21 @@ class MakeWorkbench(Workbench):
         # Import commands here, not at module top (PLAN.md, M0 lessons).
         from MakeWorkbench.hello_command import HelloCommand
         from MakeWorkbench.export_command import ExportCommand
+        from MakeWorkbench.print_command import PrintCommand
         from MakeWorkbench.settings_command import SettingsCommand
 
         # Command names are permanent identifiers; never rename them.
         FreeCADGui.addCommand("Make_ExportSTL", ExportCommand())
+        FreeCADGui.addCommand("Make_Print", PrintCommand())
         FreeCADGui.addCommand("Make_Settings", SettingsCommand())
         FreeCADGui.addCommand("Make_Hello", HelloCommand())
 
         self.appendToolbar(
-            "Make tools", ["Make_ExportSTL", "Make_Settings", "Make_Hello"])
+            "Make tools",
+            ["Make_ExportSTL", "Make_Print", "Make_Settings", "Make_Hello"])
         self.appendMenu(
-            "Make", ["Make_ExportSTL", "Make_Settings", "Make_Hello"])
+            "Make", ["Make_ExportSTL", "Make_Print", "Make_Settings",
+                     "Make_Hello"])
 
         App.Console.PrintMessage("Make workbench initialized.\n")
 
